@@ -1,6 +1,6 @@
-This project title is "Smart tracks : Automation of railway gates using IR sensors"
+This project title is "Smart Tracks: Automation of railway gates using IR Sensors"
 
-briefly, the on railway gates are closed IR sensors detects train and railway gates are opened when IR sensors detects train.this can be done with the help of Ardunio.
+briefly, the railway gates are closed when IR sensors detect trains and railway gates are opened when IR sensors detect trains. This can be done with the help of Arduino.
 
 the code wriiten in a language C++.
 
