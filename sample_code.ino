@@ -9,6 +9,7 @@ const int IR2 = 2;        // IR sensor for approaching train (First Sensor)
 const int buzzerPin = 8;  // Buzzer pin
 const int redLED = 6;     // Red LED pin (Gate closed)
 const int greenLED = 7;   // Green LED pin (Gate open)
+int IR_Sensor=0;          // for to check which is first sensor
 
 bool isGateOpen = true;   // Keep track of whether the gate is open
 bool trainDetected = false; // Track if the train was detected by the first sensor
@@ -38,21 +39,51 @@ void loop() {
       delay(200); 
   }
   
-  if (digitalRead(IR2) == LOW) {
-    if (isGateOpen) {  // If the gate is currently open, close it
-      closeGate();
-      trainDetected = true;  // Train has been detected by the first sensor
-      alertTrainDetected();   // Sound buzzer when train is detected
-    }
+  if(!trainDetected && digitalRead(IR2)==LOW){
+    IR_Sensor=1;
+  }
+  else if(!trainDetected && digitalRead(IR1)==LOW){
+    IR_Sensor=2;
   }
 
-  // If the second sensor detects the train has passed
-  if (trainDetected && digitalRead(IR1) == LOW) {
-    if (!isGateOpen) {  // If the gate is closed, open it
-      openGate();
-      trainDetected = false;  // Reset train detection
-      noTone(buzzerPin);      // Turn off the buzzer when the train leaves
+
+
+  if(IR_Sensor==1){
+    if (digitalRead(IR2) == LOW ||(digitalRead(IR2) == LOW && digitalRead(IR1) == LOW )) {
+      if (isGateOpen) {  // If the gate is currently open, close it
+        closeGate();
+        trainDetected = true;  // Train has been detected by the first sensor
+        alertTrainDetected();   // Sound buzzer when train is detected
+      }
     }
+    else if (trainDetected && digitalRead(IR1) == LOW) { // If the second sensor detects the train has passed
+      if (!isGateOpen) {  // If the gate is closed, open it
+        openGate();
+        trainDetected = false;  // Reset train detection
+        delay(1000);
+        noTone(buzzerPin);      // Turn off the buzzer when the train leaves
+      }
+    }
+  }
+  else if(IR_Sensor==2){
+    if (digitalRead(IR1) == LOW ||(digitalRead(IR1) == LOW && digitalRead(IR2) == LOW )) {
+      if (isGateOpen) {  // If the gate is currently open, close it
+        closeGate();
+        trainDetected = true;  // Train has been detected by the first sensor
+        alertTrainDetected();   // Sound buzzer when train is detected
+      }
+    }
+    else if (trainDetected && digitalRead(IR2) == LOW) { // If the second sensor detects the train has passed
+      if (!isGateOpen) {  // If the gate is closed, open it
+        openGate();
+        trainDetected = false;  // Reset train detection
+        delay(1000);
+        noTone(buzzerPin);      // Turn off the buzzer when the train leaves
+      }
+    }
+  }
+  else{
+    IR_Sensor=0;
   }
 }
 
